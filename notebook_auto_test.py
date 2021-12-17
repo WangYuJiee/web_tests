@@ -61,7 +61,7 @@ debugMode = 0
 # check_url_name = check_url_name_dict.get(check_url)
 
 if debugMode == 1:
-    temp_file_path = '/Users/49859/Desktop'
+    temp_file_path = '/Users/wangyujie/Pictures/test'
 else:
     temp_file_path = '/home/admin/e-picture'
 
@@ -79,6 +79,7 @@ def send_email_now(email, subject, msg):
 
 
 def send_DinTalk(log_contents):
+    IP = get_host_ip()
     headers = {'Content-Type': 'application/json;charset=utf-8'}
     json_text = {
         "msgtype": "text",
@@ -89,7 +90,7 @@ def send_DinTalk(log_contents):
             "isAtAll": False
         },
         "text": {
-            "content": "公有云环境的项目创建异常,请检查网站.详情查收邮件" + format(log_contents)
+            "content": "公有云环境的项目创建异常,请检查网站.详情查收邮件" + format(log_contents) + str(IP)
         }
     }
 
