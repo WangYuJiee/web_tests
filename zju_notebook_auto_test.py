@@ -54,7 +54,7 @@ api_url = "https://oapi.dingtalk.com/robot/send?access_token=06a7524b4c4ea76c895
 # 1 本地测试
 # 2 rc 或 prod 或 zju 上测试
 
-debugMode = 2
+debugMode = 0
 
 # check_url_name_dict = {
 #     MO_URL: 'MOMODEL 公有云',
@@ -74,7 +74,7 @@ else:
 def send_email_now(emails, subject, msg):
     msg['Subject'] = subject
     msg['From'] = formataddr(['AI 建模平台 Mo', 'service@momodel.ai'])
-    msg['To'] =emails
+    msg['To'] = emails
     smtp = smtplib.SMTP()
     smtp.connect(SMTP_SERVER)
     smtp.login(USERNAME, PASSWORD)
@@ -86,6 +86,7 @@ def send_email_now(emails, subject, msg):
 
 
 def send_DinTalk(log_contents):
+
     headers = {'Content-Type': 'application/json;charset=utf-8'}
     json_text = {
         "msgtype": "text",
@@ -145,7 +146,7 @@ class NotebookTest(unittest.TestCase):
         # 将浏览器最大化显示
         driver.maximize_window()
         # 点击选中登录tab
-        driver.find_element_by_xpath('//*[@id="content-wrap"]/div[1]/div/div/div[3]/div/div[1]/div/div[1]/div[2]').click()
+        driver.find_element_by_xpath('//*[@id="content-wrap"]/div/div/div/div[2]/div/div[1]/div/div/div[1]/span[2]').click()
         driver.find_element_by_id("username").clear()
         logger.warning("输入用户名")
         driver.find_element_by_id("username").send_keys("luxu99")

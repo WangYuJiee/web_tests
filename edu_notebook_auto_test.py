@@ -44,17 +44,17 @@ if debugMode == 1:
     temp_file_path = '/Users/wangyujie/Pictures/test'
 else:
     temp_file_path = '/home/admin/e-picture'
+    # temp_file_path = '/home/admin/e-picture'
 
-
-def send_email_now(email, subject, msg):
+def send_email_now(emails, subject, msg):
     msg['Subject'] = subject
     msg['From'] = formataddr(['AI 建模平台 Mo', 'service@momodel.ai'])
-    msg['To'] = email
+    msg['To'] = emails
     smtp = smtplib.SMTP()
     smtp.connect(SMTP_SERVER)
     smtp.login(USERNAME, PASSWORD)
-    receiver = email
-    smtp.sendmail(SENDER, receiver, msg.as_string())
+    # receiver = emails.split(',')
+    smtp.sendmail(SENDER, emails.split(','), msg.as_string())
     smtp.quit()
 
 def send_DinTalk(log_contents):
@@ -110,7 +110,12 @@ class NotebookTest(unittest.TestCase):
 
     def test_notebook(self):
         driver = self.driver
-        driver.get(check_url + "/user/login")
+        driver.set_page_load_timeout(30)
+        try:
+            driver.get(check_url + "/user/login")
+        except:
+            driver.execute_script('window.stop()')
+            logger.warning("加载超时，停止加载")
         # driver.execute_script("window.localStorage.setItem('language','zh-CN');")
         # driver.refresh()
         logger.warning("窗口最大化")
@@ -142,8 +147,7 @@ class NotebookTest(unittest.TestCase):
         driver.find_element_by_css_selector('#content-wrap > div.MainLayout_content-2El_O > div > div.index_template-9KrM7 > div.index_templateLeft-2lvD0.index_homeworkTableStyle-LtsRV > div > div.ant-tabs-content.ant-tabs-content-animated.ant-tabs-top-content > div.ant-tabs-tabpane.ant-tabs-tabpane-active > div:nth-child(2) > div > div:nth-child(1) > div.index_itemHeader-2RB07 > div.index_itemHeaderRight-yb0bN > div > button').click()
 
         logger.warning("切换到 tab 2")
-        time.sleep(60)
-
+        time.sleep(30)
         for _ in range(3):
             try:
                 self.switch_tab(2)
@@ -151,10 +155,15 @@ class NotebookTest(unittest.TestCase):
             except:
                 pass
             logger.warning('等待 30 s 后重试')
-            time.sleep(10)
-
+            time.sleep(30)
 
         # 确认 notebook 已打开
+        try:
+            driver.get(driver.current_url)
+        except:
+            driver.execute_script('window.stop()')
+            logger.warning("加载超时，停止加载")
+
         logger.warning("找到 filebrowser 确保 notebook 成功打开")
         driver.find_element_by_css_selector("#filebrowser")
 
@@ -257,7 +266,7 @@ def send_email(log_contents):
     # 通知开发者
 
     IP = get_host_ip()
-    if check_url == 'https://mo.zju.edu.cn' and not debugMode:
+    if check_url == 'https://edu.momodel.cn' and not debugMode:
         emails = 'a498593970@163.com,13879892236@163.com,lzfxxx@foxmail.com,progerchai@qq.com,taiyangfushezhi@qq.com,498593970@qq.com'
         # ['491730572@qq.com', 'chengsi1992@126.com', '291003720@qq.com',
         #       'rainbowgirlanita@gmail.com', 'lzfxxx@gmail.com',
@@ -265,7 +274,7 @@ def send_email(log_contents):
         subject = '教育版' + ' 项目创建异常，请检查网站，脚本地址' + str(IP)
         # print('线上已发送')
     else:
-        emails = '498593970@qq.com,taiyangfushezhi@qq.com,progerchai@qq.com,13879892236@163.com'
+        emails = '498593970@qq.com'
         subject = '教育版' + '测试环境的项目创建异常，请检查网站，脚本地址' + str(IP)
 
 

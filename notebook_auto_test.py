@@ -44,6 +44,7 @@ MO_URL = 'https://momodel.cn'
 
 # check_url = 'https://s.momodel.cn'
 check_url = 'https://momodel.cn'
+# check_url = 'http://192.168.30.154:8899'
 # 机器人
 api_url = "https://oapi.dingtalk.com/robot/send?access_token=06a7524b4c4ea76c895887cbde3e32f0656fdab66bab424c6f3d087342655f9c"
 
@@ -63,18 +64,19 @@ debugMode = 0
 if debugMode == 1:
     temp_file_path = '/Users/wangyujie/Pictures/test'
 else:
-    temp_file_path = '/home/admin/e-picture'
+    temp_file_path = '/Users/wangyujie/Pictures/test'
+    # temp_file_path = '/home/admin/e-picture'
 
 
-def send_email_now(email, subject, msg):
+def send_email_now(emails, subject, msg):
     msg['Subject'] = subject
     msg['From'] = formataddr(['AI 建模平台 Mo', 'service@momodel.ai'])
-    msg['To'] = email
+    msg['To'] = emails
     smtp = smtplib.SMTP()
     smtp.connect(SMTP_SERVER)
     smtp.login(USERNAME, PASSWORD)
-    receiver = email
-    smtp.sendmail(SENDER, receiver, msg.as_string())
+    # receiver = emails.split(',')
+    smtp.sendmail(SENDER, emails.split(','), msg.as_string())
     smtp.quit()
 
 
@@ -109,7 +111,7 @@ class NotebookTest(unittest.TestCase):
             chrome_options.add_argument('--headless')
             chrome_options.add_argument('--no-sandbox')
             chrome_options.add_argument("--disable-setuid-sandbox")
-            chrome_options.add_argument("--window-size=1024,1024")
+            chrome_options.add_argument("--window-size=1920,1080")
             self.driver = webdriver.Chrome(options=chrome_options)
         self.driver.implicitly_wait(30)
         self.verificationErrors = []
@@ -132,13 +134,15 @@ class NotebookTest(unittest.TestCase):
 
     def test_notebook(self):
         driver = self.driver
+        # driver.set_page_load_timeout(30)
+
         driver.get(check_url + "/user/login")
+
         logger.warning("窗口最大化")
         # 将浏览器最大化显示
         driver.maximize_window()
         # 点击选中登录tab
-        driver.find_element_by_xpath(
-            '//*[@id="content-wrap"]/div[1]/div/div/div[3]/div/div[1]/div/div[1]/div[2]').click()
+        driver.find_element_by_xpath('//*[@id="content-wrap"]/div/div/div/div[2]/div/div[1]/div[2]/div/div[1]/span[2]').click()
         driver.find_element_by_id("username").clear()
         logger.warning("输入用户名")
         driver.find_element_by_id("username").send_keys("luxu99")
@@ -322,7 +326,7 @@ def send_email(log_contents):
         subject = '公有云' + ' 项目创建异常，请检查网站' + str(IP)
         # print('线上已发送')
     else:
-        emails = '498593970@qq.com,taiyangfushezhi@qq.com,progerchai@qq.com,13879892236@163.com'
+        emails = '498593970@qq.com'
         subject = '公有云' + '测试环境的项目创建异常，请检查网站' + str(IP)
 
     text = email_template(
